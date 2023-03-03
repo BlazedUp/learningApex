@@ -35,18 +35,18 @@ public with sharing class MaintenanceRequestHelper {
         }
     }
     public static  Map<String,Integer> getDueDate(List<Case> listCases){
-       Map<String,Integer> result = new Map<String,Integer>();
+        Map<String,Integer> result = new Map<String,Integer>();
         Map<Id, case> caseIDs = new Map<Id, case> (listCases);
-       List<AggregateResult> queryProducts =    [SELECT Maintenance_Request__r.ID caseId, min(Equipment__r.Maintenance_Cycle__c) minCycle
+        List<AggregateResult> queryProducts =    [SELECT Maintenance_Request__r.ID caseId, min(Equipment__r.Maintenance_Cycle__c) minCycle
                                                 FROM Equipment_Maintenance_Item__c  where  Maintenance_Request__r.ID in :caseIDs.keySet() 
-                                                GROUP BY Maintenance_Request__r.ID];
+                                                WITH SECURITY_ENFORCED GROUP BY Maintenance_Request__r.ID ];
         for(AggregateResult res : queryProducts){
             Integer addDays = 0;
             if(res.get('minCycle') != null) {
                 addDays += Integer.valueOf(res.get('minCycle'));
             }
                 
-            result.put((String)res.get('caseId'),addDays);
+            result.put(String.valueOf(res.get('caseId')),addDays);
         }
         return result;
     }
