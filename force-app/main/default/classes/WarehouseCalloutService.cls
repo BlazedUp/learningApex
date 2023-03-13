@@ -17,7 +17,6 @@ public with sharing class WarehouseCalloutService implements Queueable, Database
         {
             List<Object> dataFromWarehouse = (List<Object>) (JSON.deserializeUntyped(response.getBody()));
             List<Product2> newEquipment = new List<Product2>();
-            try{
                 for(Object p : dataFromWarehouse)
                 {
                     Map<String, Object> productMap = (Map<String, Object>) p;
@@ -32,9 +31,6 @@ public with sharing class WarehouseCalloutService implements Queueable, Database
                     pr.Name = String.valueOf(productMap.get('name'));
                     newEquipment.add(pr);
                 }
-            } catch(Exception e) {
-                System.debug('Error in processing Equipment: ' + e);
-            }
             return newEquipment;
             
         }
