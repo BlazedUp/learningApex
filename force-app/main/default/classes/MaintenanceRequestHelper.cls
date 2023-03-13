@@ -3,7 +3,6 @@ public with sharing class MaintenanceRequestHelper {
         List<Case> casesToCreate = new List<Case>();
         Map<String,Integer> result = getDueDate(inputCases);
         Map<Id,Case> createdCasesMap = new Map<Id,Case>();
-        try{
             for(Case cs : inputCases){
                 if(cs.Status == 'Closed') {
                     if(cs.Type == 'Repair' || cs.Type=='Routine Maintenance') {
@@ -29,10 +28,6 @@ public with sharing class MaintenanceRequestHelper {
             if(inputCases.size() > 0 && createdCasesMap.size() > 0){
                 cloneItems(inputCases,createdCasesMap);
             }
-        }
-        catch(Exception e){
-            System.debug('Error creating Maintenance Requests'+ e);
-        }
     }
     public static  Map<String,Integer> getDueDate(List<Case> listCases){
         Map<String,Integer> result = new Map<String,Integer>();
@@ -52,7 +47,6 @@ public with sharing class MaintenanceRequestHelper {
     }
     public static void cloneItems(List<Case> closedCases, Map<Id,case> newCasesMap){
         List<Equipment_Maintenance_Item__c> newItems = new List<Equipment_Maintenance_Item__c>();
-        try{
             if(!closedCases.isEmpty() && newCasesMap.size() > 0){
                 List<Equipment_Maintenance_Item__c> oldItems = [SELECT Equipment__c, Maintenance_Request__c, Quantity__c,Maintenance_Request__r.Id
                                                                      FROM Equipment_Maintenance_Item__c
@@ -66,9 +60,5 @@ public with sharing class MaintenanceRequestHelper {
                 }
                 insert newItems;
             }
-        }
-        catch(Exception e){
-            System.debug('Error creating Maintenance Items'+ e);
-        }
     }
 }
